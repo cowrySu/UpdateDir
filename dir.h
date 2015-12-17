@@ -8,19 +8,36 @@
 #ifndef _UPDATE_DIR_DIR_
 #define _UPDATE_DIR_DIR_
 
-#include "dir_tree.h" 
-
-class Dir : public DirTree
+#include <vector>
+#include <string.h>
+class Dir 
 {
 	public:
 		Dir() = default;
-		Dir(std::string ,Dir* );
+		Dir(std::string fatherpath,std::string dirname,Dir* f);
 		bool MakeDir(std::string name);
-		bool Cp(DirTree *target, std::string path);
+		bool Cp(Dir *target, std::string path);
 		bool Touch(std::string fileName);
 		bool Ls();
 		bool Message();
+		bool IsFile = false;
+		Dir* Cd(std::string path);
+	public:
+		bool equal(std::string n)
+		{
+			return n == dirName;
+		}
+		Dir* father()
+		{
+			return fatherDir;
+		}
+		Dir* exist(std::string nameStr);
 
+	private:
+		std::string fatherPath;
+		std::string dirName;
+		std::vector<Dir*> childs;
+		Dir* fatherDir;
 };
 
 #endif

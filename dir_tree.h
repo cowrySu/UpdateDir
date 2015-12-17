@@ -21,5 +21,6 @@ class DirTree
 		std::string name;
 		DirTree *father;
 		std::vector<DirTree *> childs;
+		bool request(std::string);
 };
 #endif
