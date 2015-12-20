@@ -22,14 +22,20 @@ bool Dir::MakeDir(std::string name)
 	childs.push_back(newNode);
 	return true;
 }
-
-bool Dir::Cp(Dir *target, std::string path)
+Dir *Dir::copyDir()
 {
-	std::cout << "Dir::Cp" << std::endl;
-	 if (IsFile)
-	 {
-		 std::cout << "OK" << std::endl;
-	 }
+	Dir *newNode = new Dir(fatherPath, dirName, fatherDir);
+	for (auto it = childs.begin(); it != childs.end(); ++it)
+	{
+		newNode->add((*it)->copyDir());
+	}
+	return newNode;
+}
+bool Dir::Cp(std::string fromPathStr, std::string toPathStr)
+{
+	Dir *fromDir = Cd(fromPathStr);
+	Dir *toDir = Cd(toPathStr);
+	toDir->add(fromDir->copyDir());
 	return true;
 }
 
@@ -65,6 +71,39 @@ bool Dir::Message()
 		std::cout << fatherPath << "/" << dirName << "/" << std::endl;
 	}
 	return true;
+}
+bool Dir::Rm(std::string dirName)
+{
+	Dir *delDir = NULL; 
+	int beginIndex = 0;
+	int endIndex = dirName.find_last_of('/');
+
+	if (endIndex == std::string::npos)
+	{
+		// the target directory is single-level directory
+		auto it = childs.begin();
+		for (; it != childs.end(); ++it)
+		{
+			if ((*it)->equal(dirName))
+			{
+				childs.erase(it);
+				break;
+			}
+		}
+		if (it == childs.end())
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	// the target directory is multy-level directory
+	std::string fatherDirPath = dirName.substr(beginIndex,endIndex - beginIndex);
+	std::string delDirStr = dirName.substr(endIndex + 1,dirName.length() - endIndex);
+	Dir *fatherDir = Cd(fatherDirPath);
+	return	fatherDir->Rm(delDirStr);
 }
 Dir* Dir::Cd(std::string dir)
 {
@@ -121,7 +160,7 @@ Dir* Dir::Cd(std::string dir)
 				continue;
 			}
 			subDir = curDir->exist(subDirStr);
-			if (!subDir && !subDir->IsFile) 
+			if (subDir && !subDir->IsFile) 
 			{
 				curDir = subDir; 
 			} 
@@ -135,7 +174,11 @@ Dir* Dir::Cd(std::string dir)
 		{
 			subDirStr = dir.substr(beginIndex, maxLen - beginIndex);
 			subDir = curDir->exist(subDirStr);
-			if (!subDir && !subDir->IsFile)
+			if (curDir->equal(subDirStr) && !curDir->father())
+			{
+				targetDir = curDir;
+			}
+			else if(subDir && !subDir->IsFile)
 			{
 				targetDir = subDir;
 			}
@@ -146,8 +189,6 @@ Dir* Dir::Cd(std::string dir)
 		}
 	}
 	return targetDir;
-
-
 }
 Dir* Dir::exist(std::string nameStr)
 {
@@ -157,7 +198,8 @@ Dir* Dir::exist(std::string nameStr)
 	{
 		if((*it)->equal(nameStr))
 		{
-			std::cout << "Dir is Exist" << std::endl;
+		//	std::cout << "Dir is Exist" << std::endl;
+			target = *it;
 			break;
 		}
 	}
@@ -171,11 +213,17 @@ int main()
 	std::string parm("test");
 	myDir->MakeDir(parm);
 	myDir->MakeDir(parm+"1");
+	myDir->Touch(parm+".txt");
 	myDir = myDir->Cd(parm+"1");
 	myDir->MakeDir(parm+"3");
-	myDir = myDir->Cd("/root");
+	myDir = myDir->Cd("/root/test");
 	myDir->MakeDir(parm + "4");
-
+	myDir->Rm("/root/test.txt");
+	myDir = myDir->Cd("/root");
+	Dir*	d = myDir->copyDir(); // memery leak
+	d->Ls();
+	myDir->Cp("/root/test1", "/root/test");
+	std::cout << "--------------------" << std::endl;
 	myDir->Ls();
 	return 0;
 }
