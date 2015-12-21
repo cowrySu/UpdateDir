@@ -33,9 +33,21 @@ Dir *Dir::copyDir()
 }
 bool Dir::Cp(std::string fromPathStr, std::string toPathStr)
 {
+	std::cout << fromPathStr << std::endl;
+	std::cout << toPathStr << std::endl;
+
 	Dir *fromDir = Cd(fromPathStr);
+	fromDir->Ls();
 	Dir *toDir = Cd(toPathStr);
+	Dir *tmp = toDir;
+	std::cout << "toDir--------------" << std::endl;
+	toDir->Ls();
+	Dir* cpDir = fromDir->copyDir();
+	std::cout << "cpdir------------" << std::endl;
+	cpDir->Ls();
+	std::cout << "after copy-----------" << std::endl;
 	toDir->add(fromDir->copyDir());
+	toDir->Ls();
 	return true;
 }
 
@@ -53,10 +65,10 @@ bool Dir::Touch(std::string fileName)
 }
 bool Dir::Ls()
 {
+	Message();
 	std::vector<Dir*>::iterator it;
 	for (it = childs.begin(); it != childs.end(); ++it)
 	{
-		(*it)->Message();
 		(*it)->Ls();
 	}
 	return true;
@@ -221,7 +233,7 @@ int main()
 	myDir->Rm("/root/test.txt");
 	myDir = myDir->Cd("/root");
 	Dir*	d = myDir->copyDir(); // memery leak
-	d->Ls();
+	//d->Ls();
 	myDir->Cp("/root/test1", "/root/test");
 	std::cout << "--------------------" << std::endl;
 	myDir->Ls();
