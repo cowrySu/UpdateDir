@@ -14,9 +14,10 @@ class Dir
 {
 	public:
 		Dir() = default;
-		Dir(std::string fatherpath,std::string dirname,Dir* f);
+		Dir(std::string fatherpath, std::string dirname, Dir* f, bool isFile);
 		bool MakeDir(std::string name);
 		bool Cp(std::string fromPathStr, std::string toPathStr);
+		bool Mv(std::string fromPathStr, std::string toPathStr);
 		bool Touch(std::string fileName);
 		bool Ls();
 		bool Message();
@@ -25,19 +26,28 @@ class Dir
 		bool Rm(std::string dirName);
 	public:
 		Dir *copyDir();
+		bool set_father_path(std::string fPath)
+		{
+			fatherPath = fPath;
+			for (auto it = childs.begin(); it != childs.end(); ++it)
+			{
+				(*it)->set_father_path(fatherPath + "/" + dirName);
+			}
+			return true;
+		}
 		bool equal(std::string n)
 		{
 			return n == dirName;
 		}
-		Dir* father()
+		Dir* get_father_dir()
 		{
 			return fatherDir;
 		}
-		std::string name()
+		std::string get_dir_name()
 		{
 			return dirName;
 		}
-		std::string father_path()
+		std::string get_father_path()
 		{
 			return fatherPath;
 		}

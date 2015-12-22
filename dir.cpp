@@ -8,8 +8,9 @@
 #include<iostream>
 #include "dir.h"
 
-Dir::Dir(std::string fatherpath, std::string name1, Dir* father1) : fatherPath(fatherpath), dirName(name1), fatherDir(father1) 
+Dir::Dir(std::string fatherpath, std::string name1, Dir* father1, bool isFile) : fatherPath(fatherpath), dirName(name1), fatherDir(father1), IsFile(isFile)
 {
+
 }
 bool Dir::MakeDir(std::string name)
 {
@@ -18,13 +19,13 @@ bool Dir::MakeDir(std::string name)
 	{
 		return false;
 	}
-	Dir *newNode = new Dir(fatherPath + "/" + dirName, name, this);
+	Dir *newNode = new Dir(fatherPath + "/" + dirName, name, this, false);
 	childs.push_back(newNode);
 	return true;
 }
 Dir *Dir::copyDir()
 {
-	Dir *newNode = new Dir(fatherPath, dirName, fatherDir);
+	Dir *newNode = new Dir(fatherPath, dirName, fatherDir, IsFile);
 	for (auto it = childs.begin(); it != childs.end(); ++it)
 	{
 		newNode->add((*it)->copyDir());
@@ -34,11 +35,32 @@ Dir *Dir::copyDir()
 bool Dir::Cp(std::string fromPathStr, std::string toPathStr)
 {
 	Dir *fromDir = Cd(fromPathStr);
+	if (!fromDir)
+	{
+		return false;
+	}
+
 	Dir *toDir = Cd(toPathStr);
-	toDir->add(fromDir->copyDir());
+	if (!toDir)
+	{
+		return false;
+	}
+
+	Dir *cpDir = fromDir->copyDir();
+	std::string fPath = toDir->get_father_path();
+	std::string dirName = toDir->get_dir_name();
+	cpDir->set_father_path(fPath + "/" + dirName);
+	toDir->add(cpDir);
 	return true;
 }
-
+bool Dir::Mv(std::string fromPathStr, std::string toPathStr)
+{
+	if (Cp(fromPathStr, toPathStr) && Rm(fromPathStr))
+	{
+		return true;
+	}
+	return false;
+}
 bool Dir::Touch(std::string fileName)
 {
 	//std::cout << "Dir::Touch" << std::endl;
@@ -46,17 +68,17 @@ bool Dir::Touch(std::string fileName)
 	{
 		return false;
 	}
-	Dir *newNode = new Dir(fatherPath + "/" + dirName, fileName, this);
+	Dir *newNode = new Dir(fatherPath + "/" + dirName, fileName, this, true);
 	newNode->IsFile = true;
 	childs.push_back(newNode);
 	return true;
 }
 bool Dir::Ls()
 {
+	Message();
 	std::vector<Dir*>::iterator it;
 	for (it = childs.begin(); it != childs.end(); ++it)
 	{
-		(*it)->Message();
 		(*it)->Ls();
 	}
 	return true;
@@ -141,9 +163,9 @@ Dir* Dir::Cd(std::string dir)
 		Dir *curDir = this;
 		Dir *subDir = NULL;
 		// frined function will be better
-		while (curDir->father())
+		while (curDir->get_father_dir())
 		{
-			curDir = curDir->father();
+			curDir = curDir->get_father_dir();
 		}
 		// deal /123/456/7
 		int beginIndex = 1;
@@ -155,7 +177,7 @@ Dir* Dir::Cd(std::string dir)
 		{
 		    subDirStr = dir.substr(beginIndex, endIndex - beginIndex);
 			beginIndex = endIndex + 1;
-			if (curDir->equal(subDirStr) && !curDir->father()) 
+			if (curDir->equal(subDirStr) && !curDir->get_father_dir()) 
 			{ // it is root 
 				continue;
 			}
@@ -174,7 +196,7 @@ Dir* Dir::Cd(std::string dir)
 		{
 			subDirStr = dir.substr(beginIndex, maxLen - beginIndex);
 			subDir = curDir->exist(subDirStr);
-			if (curDir->equal(subDirStr) && !curDir->father())
+			if (curDir->equal(subDirStr) && !curDir->get_father_dir())
 			{
 				targetDir = curDir;
 			}
@@ -206,24 +228,37 @@ Dir* Dir::exist(std::string nameStr)
 	return target;
 }
 #ifdef UNIT_TEST
+void menu()
+{
+	std::string command;	
+	std::string opt;
+	while (1)
+	{
 
+	}
+}
 int main()
 {
-	Dir *myDir = new Dir("", "root", NULL);
-	std::string parm("test");
-	myDir->MakeDir(parm);
-	myDir->MakeDir(parm+"1");
-	myDir->Touch(parm+".txt");
-	myDir = myDir->Cd(parm+"1");
-	myDir->MakeDir(parm+"3");
-	myDir = myDir->Cd("/root/test");
-	myDir->MakeDir(parm + "4");
-	myDir->Rm("/root/test.txt");
+	Dir *myDir = new Dir("", "root", NULL, false);
+	myDir->MakeDir("dir1");
+	myDir->Touch("file1");
+	myDir->MakeDir("dir2");
+	myDir->MakeDir("dir3");
+	myDir = myDir->Cd("dir1");
+	myDir->MakeDir("dir4");
+	myDir->Touch("file2");
+	myDir->Touch("file3");
+	myDir->MakeDir("dir5");
+	
+	myDir = myDir->Cd("..");
+	myDir = myDir->Cd("dir3");
+	myDir->MakeDir("dir6");
+	myDir->MakeDir("dir7");
+	myDir = myDir->Cd("dir7");
+	myDir->Touch("file4");
+
+	myDir->Mv("/root/dir3", "/root/dir1/dir5");
 	myDir = myDir->Cd("/root");
-	Dir*	d = myDir->copyDir(); // memery leak
-	d->Ls();
-	myDir->Cp("/root/test1", "/root/test");
-	std::cout << "--------------------" << std::endl;
 	myDir->Ls();
 	return 0;
 }
