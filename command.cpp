@@ -5,18 +5,31 @@
     > Created Time: 2015年12月23日 星期三 14时48分05秒
  ************************************************************************/
 #include "command.h"
-#include "dir.h"
 #include<iostream>
+
+#include "dir.h"
+#include "log.h"
+
+Log myLog("command.log");
 
 Command::Command()
 {
-	execute["mv"] = mv;
-	/*
-	execute["cp"] = (cp);
-	execute["mkdir"] = func_ptr(mkdir);
-	execute["touch"] = func_ptr(touch);
-	execute["cd"] = func_ptr(cd);
-*/
+	myLog.Log_Info("Command::Command");
+	func = &Command::mkdir;
+	execute["mv"] = &Command::mv;
+	execute["cp"] = &Command::cp;
+	execute["mkdir"] = &Command::mkdir;
+	execute["touch"] = &Command::touch;
+	execute["cd"] = &Command::cd;
+	execute["ls"] = &Command::ls;
+	execute["rm"] = &Command::rm;
+
+	std::string m("mkdir");
+	if (func == execute[m])
+	{
+		std::cout << "I dont know" << std::endl;
+	}
+
 	myDir = NULL;
 	commandHistory.clear();
 	memento.clear();
@@ -64,7 +77,15 @@ bool Command::SetCommand(std::string commandStr)
 }
 bool Command::Execute()
 {
-	execute[opt]();
+	myLog.Log_Info("Command::Execute:" + opt);
+	if(func == execute[opt])
+		(this->*func)();
+	else
+	{
+		std::cout << opt << std::endl;
+	}
+
+	//(this->*execute[opt])();
 	return true;
 }
 
@@ -123,13 +144,15 @@ void Command::cp()
 
 void Command::mkdir()
 {
+	std::string m("");
+	myLog.Log_Info(m + "command::mkdir" + "  param1=" + param1);
 	if (myDir)
 	{
 		myDir->MakeDir(param1);
 	}
 	else
 	{
-		myDir = new Dir("/", param1, NULL, false);
+		myDir = new Dir("", param1, NULL, false);
 	}
 }
 
@@ -183,9 +206,9 @@ int main()
 {
 	Command myCommand;
 	std::string command;
-
-	while (std::cin >> command)
+	while (true)
 	{
+		getline(std::cin, command);
 		myCommand.SetCommand(command);
 		myCommand.Execute();
 	}

@@ -3,7 +3,7 @@ dir_test:
 log_test:
 	g++ -g -DUNIT_TEST -o log_test log.cpp -std=c++11
 command_test:
-	g++ -g -DCOMMAND_TEST -o command_test command.cpp dir.cpp -std=c++11
+	g++ -g -DCOMMAND_TEST -o command_test command.cpp dir.cpp log.cpp -std=c++11
 clean:
 	rm -f dir_test 
 	rm -f log_test

@@ -14,7 +14,8 @@ class Dir;
 class Command
 {
 	public:
-		typedef void (*func_ptr)();
+		typedef void (Command::*func_ptr)();
+		void (Command::*func)();
 	public:
 		Command();
 		bool SetCommand(std::string commandStr);
@@ -23,14 +24,14 @@ class Command
 
 		bool CreateMemento(std::string dscr);
 		bool SetMemento(std::string dscr); 
-	private:
-		void mv();
-		void cp();
-		void mkdir();
-		void rm();
-		void touch();
-		void cd();
-		void ls();
+	public:
+		 void mv();
+		 void cp();
+		 void mkdir();
+		 void rm();
+		 void touch();
+		 void cd();
+		 void ls();
 	private:
 		std::string opt;
 		std::string param1;
