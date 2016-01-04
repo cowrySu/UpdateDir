@@ -20,6 +20,7 @@ class Dir
 		bool Mv(std::string fromPathStr, std::string toPathStr);
 		bool Touch(std::string fileName);
 		bool Ls();
+		std::vector<std::string> Lss();
 		bool Message();
 		bool IsFile = false;
 		Dir* Cd(std::string path);

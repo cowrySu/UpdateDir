@@ -24,6 +24,7 @@ class Command
 
 		bool CreateMemento(std::string dscr);
 		bool SetMemento(std::string dscr); 
+		std::vector<std::string> lss();
 	private:
 		 void mv();
 		 void cp();

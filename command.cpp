@@ -10,10 +10,10 @@
 #include "dir.h"
 #include "log.h"
 
-Log myLog("command.log");
 
 Command::Command()
 {
+	static Log myLog("command.log");
 	myLog.Log_Info("Command::Command");
 	func = &Command::mkdir;
 	execute["mv"] = &Command::mv;
@@ -124,7 +124,10 @@ bool Command::SetMemento(std::string dscr)
 	return true;
 }
 
-
+std::vector<std::string> Command::lss()
+{
+	return myDir->Lss();
+}
 
 void Command::mv()
 {

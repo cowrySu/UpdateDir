@@ -83,6 +83,32 @@ bool Dir::Ls()
 	}
 	return true;
 }
+std::vector<std::string> Dir::Lss() // think about the memory allocation efficientcy
+{
+	std::vector<std::string> dirMessage;
+	dirMessage.clear();
+
+	if (IsFile)
+	{
+		dirMessage.push_back(fatherPath + "/" + dirName);
+	}
+	else 
+	{
+
+		dirMessage.push_back(fatherPath + "/" + dirName + "/");
+	}
+	
+	std::vector<std::string> subDirMessage;
+	for (auto itChild = childs.begin(); itChild != childs.end(); itChild ++ )
+	{
+		subDirMessage = (*itChild)->Lss();
+		for (auto itSubDirMessage = subDirMessage.begin(); itSubDirMessage != subDirMessage.end(); ++itSubDirMessage)
+		{
+			dirMessage.push_back((*itSubDirMessage));
+		}
+	}
+	return dirMessage;
+}
 bool Dir::Message()
 {
 	if (IsFile)
@@ -251,6 +277,12 @@ int main()
 	myDir->Mv("/root/dir3", "/root/dir1/dir5");
 	myDir = myDir->Cd("/root");
 	myDir->Ls();
+	std::cout << "-----------------test lss----------------" << std::endl;
+	std::vector<std::string> dirMessage = myDir->Lss(); 
+	for (auto itDirMessage = dirMessage.begin(); itDirMessage != dirMessage.end(); ++itDirMessage)
+	{
+		std::cout << *itDirMessage << std::endl;
+	}
 	return 0;
 }
 
