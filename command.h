@@ -24,7 +24,7 @@ class Command
 
 		bool CreateMemento(std::string dscr);
 		bool SetMemento(std::string dscr); 
-	public:
+	private:
 		 void mv();
 		 void cp();
 		 void mkdir();

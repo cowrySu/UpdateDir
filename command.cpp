@@ -24,16 +24,9 @@ Command::Command()
 	execute["ls"] = &Command::ls;
 	execute["rm"] = &Command::rm;
 
-	std::string m("mkdir");
-	if (func == execute[m])
-	{
-		std::cout << "I dont know" << std::endl;
-	}
-
 	myDir = NULL;
 	commandHistory.clear();
 	memento.clear();
-	execute.clear();
 }
 bool Command::SetCommand(std::string commandStr)
 {
@@ -78,14 +71,14 @@ bool Command::SetCommand(std::string commandStr)
 bool Command::Execute()
 {
 	myLog.Log_Info("Command::Execute:" + opt);
-	if(func == execute[opt])
-		(this->*func)();
-	else
+	if (execute.count(opt) > 0)
 	{
-		std::cout << opt << std::endl;
+		(this->*execute[opt])();
 	}
-
-	//(this->*execute[opt])();
+	else 
+	{
+		std::cerr << "command is error" << std::endl;
+	}
 	return true;
 }
 
@@ -101,7 +94,14 @@ bool Command::CreateMemento(std::string dscr)
 {
 	if (myDir)
 	{
-		memento[dscr] = myDir->copyDir();
+		if (memento.count(dscr) > 0)
+		{
+			std::cerr << "the tag you input is exist" << std::endl;
+		}
+		else 
+		{
+			memento[dscr] = myDir->copyDir();
+		}
 	}
 	else
 	{
@@ -113,7 +113,14 @@ bool Command::SetMemento(std::string dscr)
 {
 	// how to destroy the dir*	
 	// should use shared_ptr<Dir*>
-	myDir = memento[dscr] != NULL ? memento[dscr] : myDir;
+	if (memento.count(dscr) > 0)
+	{
+		myDir = memento[dscr];
+	}
+	else 
+	{
+		std::cerr << "the tag you input is not exist" << std::endl;
+	}
 	return true;
 }
 

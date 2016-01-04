@@ -129,7 +129,7 @@ bool Dir::Rm(std::string dirName)
 }
 Dir* Dir::Cd(std::string dir)
 {
-	Dir* targetDir = NULL;
+	Dir* targetDir = this;
 	if ("." == dir)
 	{
 		targetDir = this;
@@ -142,7 +142,7 @@ Dir* Dir::Cd(std::string dir)
 		}
 		else
 		{
-			std::cout << "this is root" << std::endl;
+			std::cout << "current directory is root" << std::endl;
 		}
 	}
 	// deal path
@@ -228,15 +228,6 @@ Dir* Dir::exist(std::string nameStr)
 	return target;
 }
 #ifdef UNIT_TEST
-void menu()
-{
-	std::string command;	
-	std::string opt;
-	while (1)
-	{
-
-	}
-}
 int main()
 {
 	Dir *myDir = new Dir("", "root", NULL, false);
