@@ -215,6 +215,7 @@ void Command::ls()
 int main()
 {
 	Command myCommand;
+	myCommand.lss();
 	std::string command;
 	while (true)
 	{

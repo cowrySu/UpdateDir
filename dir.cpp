@@ -90,7 +90,11 @@ std::vector<std::string> Dir::Lss() // think about the memory allocation efficie
 {
 	std::vector<std::string> dirMessage;
 	dirMessage.clear();
-
+	
+	if (!this)
+	{
+		return dirMessage;
+	}
 	if (IsFile)
 	{
 		dirMessage.push_back(fatherPath + "/" + dirName);
@@ -259,6 +263,8 @@ Dir* Dir::exist(std::string nameStr)
 #ifdef DIR_TEST 
 int main()
 {
+	Dir test;
+	test.Lss();
 	Dir *myDir = new Dir("", "root", NULL, false);
 	myDir->MakeDir("dir1");
 	myDir->Touch("file1");

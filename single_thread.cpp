@@ -8,9 +8,19 @@
 #include "single_thread.h"
 #include<iostream>
 #include <unistd.h>
-
+#include "log.h"
+Log myLog("single_thread.log");
 void SingleThread::Execute()
 {
+	myCommand.SetCommand("mkdir root");
+	myCommand.Execute();
+	myLog.Log_Debug("cmd: mkdir root");
+	myCommand.SetCommand("mkdir test");
+	myCommand.Execute();
+	myLog.Log_Debug("cmd: mkdir test");
+	myCommand.SetCommand("touch file");
+	myCommand.Execute();
+	myLog.Log_Debug("cmd: touch file");
 	while (true)
 	{
 		myCmdGenerator.SetParams(myCommand.lss());
@@ -23,8 +33,10 @@ void SingleThread::Execute()
 #ifdef SINGLE_THREAD_TEST
 int main()
 {
+	myLog.Log_Debug("begin");
 	SingleThread mySingleThread;
 	mySingleThread.Execute();
 	return 0;
 }
 #endif
+
