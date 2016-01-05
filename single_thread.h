@@ -16,7 +16,7 @@ class SingleThread
 		SingleThread() = default;
 		void Execute();
 	private:
-		CmdGenerator myCmdGenerator("single_test"); // no perfect, shall default construct
+		CmdGenerator myCmdGenerator; // no perfect, shall default construct
 		Command myCommand;	
 };
 #endif

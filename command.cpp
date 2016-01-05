@@ -11,9 +11,9 @@
 #include "log.h"
 
 
+static Log myLog("command.log");
 Command::Command()
 {
-	static Log myLog("command.log");
 	myLog.Log_Info("Command::Command");
 	func = &Command::mkdir;
 	execute["mv"] = &Command::mv;

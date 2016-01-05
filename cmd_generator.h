@@ -14,6 +14,9 @@
 class CmdGenerator
 {
 	public:
+		CmdGenerator(){
+			cmdGeneratorId = "default_name";
+		}
 		CmdGenerator(std::string id);
 		std::string CmdId()
 		{

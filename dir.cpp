@@ -256,7 +256,7 @@ Dir* Dir::exist(std::string nameStr)
 	}
 	return target;
 }
-#ifdef UNIT_TEST
+#ifdef DIR_TEST 
 int main()
 {
 	Dir *myDir = new Dir("", "root", NULL, false);
@@ -279,13 +279,6 @@ int main()
 
 	myDir->Mv("/root/dir3", "/root/dir1/dir5");
 	myDir = myDir->Cd("/root");
-<<<<<<< HEAD
-	Dir*	d = myDir->copyDir(); // memery leak
-	//d->Ls();
-	myDir->Cp("/root/test1", "/root/test");
-	std::cout << "--------------------" << std::endl;
-=======
->>>>>>> aa55606c6ade411321b836373e5abba62986a2d9
 	myDir->Ls();
 	std::cout << "-----------------test lss----------------" << std::endl;
 	std::vector<std::string> dirMessage = myDir->Lss(); 

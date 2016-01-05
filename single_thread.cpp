@@ -7,8 +7,24 @@
 
 #include "single_thread.h"
 #include<iostream>
+#include <unistd.h>
 
 void SingleThread::Execute()
 {
-	
+	while (true)
+	{
+		myCmdGenerator.SetParams(myCommand.lss());
+		myCmdGenerator.Generate();
+		myCommand.SetCommand(myCmdGenerator.Cmd());
+		myCommand.Execute();
+		sleep(5);
+	}
 }
+#ifdef SINGLE_THREAD_TEST
+int main()
+{
+	SingleThread mySingleThread;
+	mySingleThread.Execute();
+	return 0;
+}
+#endif

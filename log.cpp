@@ -101,7 +101,7 @@ void Log::Log_Error(std::string logMesg)
 		create_ostream();
 	}
 }
-#ifdef UNIT_TEST
+#ifdef LOG_TEST 
 int main()
 {
 	Log myLog("test.log");
