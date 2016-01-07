@@ -11,6 +11,7 @@
 class Log
 {
 	public:
+		Log() = default;
 		Log(std::string fName);
 		void Log_Info(std::string);
 		void Log_Warning(std::string);

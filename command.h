@@ -11,6 +11,7 @@
 #include <vector>
 #include <map>
 class Dir;
+class Log;
 class Command
 {
 	public:
@@ -42,5 +43,7 @@ class Command
 		std::map<std::string, Dir*> memento;	
 		std::vector<std::string> commandHistory;
 		std::map<std::string, func_ptr> execute;
+		
+		Log *myLog;
 };
 #endif

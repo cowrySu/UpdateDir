@@ -38,7 +38,7 @@ void Log::Log_Info (std::string logMesg)
 	os << buffer << "LOG_INFO " << "\t" << logMesg << std::endl; 
 	logFileCount ++;
 
-	if (logFileCount % 1000 == 0)
+	if (logFileCount % 10000 == 0)
 	{
 		logFileCount = 1;
 		create_ostream();

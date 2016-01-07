@@ -10,28 +10,18 @@
 #include <string>
 #include <map>
 #include <vector>
-
+class Log;
 class CmdGenerator
 {
 	public:
-		CmdGenerator(){
-			cmdGeneratorId = "default_name";
-		}
+		CmdGenerator();
 		CmdGenerator(std::string id);
-		std::string CmdId()
-		{
-			return cmdGeneratorId;
-		}
-		std::string Cmd()
-		{
-			return cmd;
-		}
-		void SetParams(std::vector<std::string> newp)
-		{
-			params = newp;
-		}
+		std::string CmdId();
+		std::string Cmd();
+		void SetParams(std::vector<std::string> newp);
 		void Generate();
 	private:
+		Log *myLog;
 		std::string cmdGeneratorId;
 		std::vector<std::string> params;
 		std::map<std::string, int> cmds; // int is the number of its params

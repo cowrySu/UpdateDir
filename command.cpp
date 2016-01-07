@@ -11,10 +11,8 @@
 #include "log.h"
 
 
-static Log myLog("command.log");
 Command::Command()
 {
-	myLog.Log_Info("Command::Command");
 	func = &Command::mkdir;
 	execute["mv"] = &Command::mv;
 	execute["cp"] = &Command::cp;
@@ -27,6 +25,9 @@ Command::Command()
 	myDir = NULL;
 	commandHistory.clear();
 	memento.clear();
+
+	myLog = new Log("command.log");
+	myLog->Log_Debug("Command::Command");
 }
 bool Command::SetCommand(std::string commandStr)
 {
@@ -70,7 +71,7 @@ bool Command::SetCommand(std::string commandStr)
 }
 bool Command::Execute()
 {
-	myLog.Log_Info("Command::Execute:" + opt);
+	myLog->Log_Info("Command::Execute:" + opt);
 	if (execute.count(opt) > 0)
 	{
 		(this->*execute[opt])();
@@ -155,7 +156,7 @@ void Command::cp()
 void Command::mkdir()
 {
 	std::string m("");
-	myLog.Log_Info(m + "command::mkdir" + "  param1=" + param1);
+	myLog->Log_Info(m + "command::mkdir" + "  param1=" + param1);
 	if (myDir)
 	{
 		myDir->MakeDir(param1);
